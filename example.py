@@ -20,28 +20,28 @@ class Bot(discord.Client):
 
     async def on_message(self, message):
         if message.author != self.user:
-            print(message.author.name, ":", message)
+            print(message.author.name, ":", message.content)
 
-        elif message.startwith == "menu":
+            if message.content == "menu":
 
-            # mains parameters of BetterMenu class
-            choices = ["Hey", "Goodbye"]
-            authorized_ids = [message.author.id]
-            channel = message.channel
-            title = "My menu"
-            description = "This is my menu"
-            color = 0x008000
-            number_of_answer = 1
+                # mains parameters of BetterMenu class
+                choices = ["Hey", "Goodbye"]
+                authorized_ids = [message.author.id]
+                channel = message.channel
+                title = "My menu"
+                description = "This is my menu"
+                color = 0x008000
+                number_of_answer = 1
 
-            # create the BetterMenu
-            my_menu_handler.menu_list.append(CludiMenus.BetterMenu(choices, authorized_ids, channel, title, description, color, number_of_answer))
+                # create the BetterMenu
+                my_menu_handler.menu_list.append(CludiMenus.BetterMenu(choices, authorized_ids, channel, title, description, color, number_of_answer))
 
-            # display the BetterMenu
-            await my_menu_handler.menu_list[0].display()
+                # display the BetterMenu
+                await my_menu_handler.menu_list[0].display()
 
     async def on_reaction_add(self, reaction, user):
         if user != self.user:
-            print(user.name, "reacted with :", reaction)
+            print(user.name, "reacted with :", reaction.emoji)
 
             # this line allow the menu handler to fill menus with answers
             my_menu_handler.on_reaction_add_menu(reaction, user)
@@ -57,7 +57,9 @@ class Bot(discord.Client):
                     # [[id_of_an_user, his_first_answer, his_second_answer, 3th, 4th, ...], [2id, 1st answer, ...], ...]
                     # the format of the answer is a number, representing the index of an item in the choices list
                     # in our example, we expect to see something like this :
-                    # [[1234567, 1]]
+                    # [[0, 1]]
+                    # 0 represent the index of the user in the authorized_id list
+                    # 1 is the index of the choice, so it means the user choose 'Goodbye'
                     # so, to see the answer, we can simply do :
                     index = my_menu_handler.menu_list[0].result_list[0][1]
                     user_choice = my_menu_handler.menu_list[0].choice[index]
@@ -65,11 +67,11 @@ class Bot(discord.Client):
 
                     # then you can do whatever you want with it
 
-                    await reaction.channel.send("You selected", user_choice)
+                    await reaction.message.channel.send("You selected " + user_choice)
 
     async def game_on_reaction_remove(self, reaction, user):
         if user != self.user:
-            print(user.name, "removed reaction :", reaction)
+            print(user.name, "removed reaction :", reaction.emoji)
 
             # this line allow the menu handler to replace answer from a menu with -1, if the user want to change his choice
             my_menu_handler.on_reaction_remove_menu(reaction, user)
