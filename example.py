@@ -34,10 +34,10 @@ class Bot(discord.Client):
             number_of_answer = 1
 
             # create the BetterMenu
-            my_menu = CludiMenus.BetterMenu(choices, authorized_ids, channel, title, description, color, number_of_answer)
+            my_menu_handler.menu_list.append(CludiMenus.BetterMenu(choices, authorized_ids, channel, title, description, color, number_of_answer))
 
             # display the BetterMenu
-            await my_menu.display()
+            await my_menu_handler.menu_list[0].display()
 
     async def on_reaction_add(self, reaction, user):
         if user != self.user:
