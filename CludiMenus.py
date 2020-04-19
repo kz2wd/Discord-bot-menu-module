@@ -56,26 +56,26 @@ class MenuHandler:  # a way to manage menus
         self.state = 0  # you can change this to activate or deactivate menus
 
     def on_reaction_add_menu(self, reaction, user):
-        for h in self.menu_list:
-            if self.state == h.active_state:
-                for i, item_id in enumerate(h.allowed_id):
-                    if user.id == item_id:
-                        for j, item in enumerate(emote_indicator):
-                            if item == reaction.emoji:
+        for menu in self.menu_list:
+            if menu.active_state == self.state:
+                for id_counter, id_authorized in enumerate(menu.allowed_id):
+                    if id_authorized == user.id:
+                        for emote_counter, emote in enumerate(emote_indicator):
+                            if emote == reaction.emoji:
                                 number_of_response_not_filled = True
-                                for k in range(h.number_of_response):
+                                for k in range(menu.number_of_response):
                                     if number_of_response_not_filled:
-                                        if h.result_list[i][k + 1] == -1:
-                                            h.result_list[i][k + 1] = j
+                                        if menu.result_list[id_counter][k + 1] == -1:
+                                            menu.result_list[id_counter][k + 1] = emote_counter
                                             number_of_response_not_filled = False
 
     def on_reaction_remove_menu(self, reaction, user):
-        for h in self.menu_list:
-            if self.state == h.active_state:
-                for i, item_id in enumerate(h.allowed_id):
-                    if user.id == item_id:
-                        for j, item in enumerate(emote_indicator):
-                            if item == reaction.emoji:
-                                for k in range(h.number_of_response):
-                                    if h.result_list[i][k + 1] == j:
-                                        h.result_list[i][k + 1] = -1
+        for menu in self.menu_list:
+            if menu.active_state == self.state:
+                for id_counter, id_authorized in enumerate(menu.allowed_id):
+                    if id_authorized == user.id:
+                        for emote_counter, emote in enumerate(emote_indicator):
+                            if emote == reaction.emoji:
+                                for k in range(menu.number_of_response):
+                                    if menu.result_list[id_counter][k + 1] == emote_counter:
+                                        menu.result_list[id_counter][k + 1] = -1
